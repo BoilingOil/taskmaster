@@ -5,6 +5,10 @@ export type TaskProps = {
   notes?: string;
 };
 
+export type TaskListProps = {
+  title: string;
+};
+
 export type TaskActions = 'ADD_TASK' | 'EDIT_TASK' | 'REMOVE_TASK';
 
 export default function appReducer(
