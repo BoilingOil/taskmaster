@@ -1,12 +1,17 @@
 export type TaskProps = {
+  selected?: number | undefined;
   id: number;
   title: string;
-  status: 'complete' | 'notStarted' | 'inProgress';
+  status: 'complete' | 'notStarted';
   notes?: string;
+  onSelection?: (id: number) => void;
+  onEdit?: (task: TaskProps) => void;
+  onRemove?: (id: number) => void;
 };
 
 export type TaskListProps = {
   title: string;
+  navigation: {setCurrentView: React.Dispatch<React.SetStateAction<string>>};
 };
 
 export type TaskActions = 'ADD_TASK' | 'EDIT_TASK' | 'REMOVE_TASK';

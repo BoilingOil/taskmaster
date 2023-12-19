@@ -3,7 +3,7 @@ import {TextInput, Text, TouchableOpacity, View} from 'react-native';
 import {GlobalContext} from '../../context/GlobalState';
 import {TaskProps} from '../../context/AppReducer';
 
-export function AddTask() {
+export default function AddTask({navigation}) {
   const {tasks, addTask} = useContext(GlobalContext);
   const [title, setTitle] = useState('');
 
@@ -14,6 +14,10 @@ export function AddTask() {
       status: 'notStarted',
     };
     addTask(newTask);
+  };
+
+  const handleCancel = () => {
+    navigation.setCurrentView('taskList');
   };
 
   return (
@@ -27,7 +31,7 @@ export function AddTask() {
       <TouchableOpacity onPress={handleSubmit}>
         <Text>Create Task</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={handleSubmit}>
+      <TouchableOpacity onPress={handleCancel}>
         <Text>Cancel</Text>
       </TouchableOpacity>
     </View>

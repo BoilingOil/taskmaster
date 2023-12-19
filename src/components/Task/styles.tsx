@@ -9,9 +9,18 @@ export default StyleSheet.create({
     borderColor: 'black',
     borderRadius: 4,
   },
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
   sectionContainer: {
     marginTop: 32,
-    paddingHorizontal: 24,
+    padding: 16,
+    // paddingHorizontal: 24,
+    borderWidth: 1,
+  },
+  selected: {
+    borderColor: 'black',
   },
   sectionDescription: {
     marginTop: 8,

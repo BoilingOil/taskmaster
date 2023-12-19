@@ -5,18 +5,30 @@
  * @format
  */
 
-import React from 'react';
+import React /*, {useState} */ from 'react';
 import {SafeAreaView, StatusBar, useColorScheme} from 'react-native';
 import {GlobalProvider} from './context/GlobalState';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
-import {TaskList} from './components';
+import {TaskList /*, AddTask, EditTask */} from './components';
 
 function App(): React.JSX.Element {
+  // const [currentView, setCurrentView] = useState('taskList');
   const isDarkMode = useColorScheme() === 'dark';
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
+
+  // const handleScreens = () => {
+  //   switch (currentView) {
+  //     case 'taskList':
+  //       return <TaskList navigation={{setCurrentView}} />;
+  //     case 'addTask':
+  //       return <AddTask navigation={{setCurrentView}} />;
+  //     case 'editTasks':
+  //       return <EditTask navigation={{setCurrentView}} />;
+  //   }
+  // };
 
   return (
     <GlobalProvider>
@@ -25,7 +37,8 @@ function App(): React.JSX.Element {
           barStyle={isDarkMode ? 'light-content' : 'dark-content'}
           backgroundColor={backgroundStyle.backgroundColor}
         />
-        <TaskList title="Tasks" />
+        {/* {handleScreens()} */}
+        <TaskList />
       </SafeAreaView>
     </GlobalProvider>
   );
