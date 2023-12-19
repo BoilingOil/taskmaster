@@ -3,24 +3,39 @@ export type TaskProps = {
   id: number;
   title: string;
   status: 'complete' | 'notStarted';
-  notes?: string;
+  description?: string;
+  deadline?: string;
   onSelection?: (id: number) => void;
   onEdit?: (task: TaskProps) => void;
   onRemove?: (id: number) => void;
 };
 
-export type TaskListProps = {
-  title: string;
-  navigation: {setCurrentView: React.Dispatch<React.SetStateAction<string>>};
+export type TaskDetailsProps = {
+  navigation: {setVisible: React.Dispatch<React.SetStateAction<boolean>>};
 };
 
-export type TaskActions = 'ADD_TASK' | 'EDIT_TASK' | 'REMOVE_TASK';
+export type TaskListProps = {
+  navigation: {setVisible: React.Dispatch<React.SetStateAction<boolean>>};
+};
+
+export type TaskActions =
+  | 'SELECT_TASK'
+  | 'ADD_TASK'
+  | 'EDIT_TASK'
+  | 'REMOVE_TASK';
 
 export default function appReducer(
-  state: {tasks: TaskProps[]},
+  state: {tasks: TaskProps[]; selectedTask: TaskProps},
   action: {type: TaskActions; payload: any},
 ) {
   switch (action.type) {
+    case 'SELECT_TASK':
+      console.log('PAYLOAD', action.payload);
+      return {
+        ...state,
+        selectedTask: action.payload,
+      };
+
     case 'ADD_TASK':
       return {
         ...state,

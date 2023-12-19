@@ -1,18 +1,21 @@
 import {StyleSheet} from 'react-native';
 
 export default StyleSheet.create({
-  addTaskButton: {
+  addButton: {
     backgroundColor: 'green',
-    width: 20,
-    height: 20,
+    padding: 8,
+    borderRadius: 4,
+  },
+  addButtonText: {
+    color: 'white',
   },
   listHeaderContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    paddingHorizontal: 16,
   },
   sectionContainer: {
-    marginTop: 32,
     paddingHorizontal: 24,
   },
   sectionDescription: {

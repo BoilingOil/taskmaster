@@ -1,46 +1,34 @@
 /**
  * Taskmaster
+ * by Jason Walker
  * https://github.com/boilingoil/taskmaster
  *
  * @format
  */
 
-import React /*, {useState} */ from 'react';
-import {SafeAreaView, StatusBar, useColorScheme} from 'react-native';
-import {GlobalProvider} from './context/GlobalState';
-import {Colors} from 'react-native/Libraries/NewAppScreen';
-import {TaskList /*, AddTask, EditTask */} from './components';
+import React from 'react';
+import {NavigationContainer} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {TaskList, TaskDetails} from './components';
+
+const Stack = createNativeStackNavigator();
 
 function App(): React.JSX.Element {
-  // const [currentView, setCurrentView] = useState('taskList');
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
-  // const handleScreens = () => {
-  //   switch (currentView) {
-  //     case 'taskList':
-  //       return <TaskList navigation={{setCurrentView}} />;
-  //     case 'addTask':
-  //       return <AddTask navigation={{setCurrentView}} />;
-  //     case 'editTasks':
-  //       return <EditTask navigation={{setCurrentView}} />;
-  //   }
-  // };
-
   return (
-    <GlobalProvider>
-      <SafeAreaView style={backgroundStyle}>
-        <StatusBar
-          barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-          backgroundColor={backgroundStyle.backgroundColor}
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Tasks">
+        <Stack.Screen
+          name="Tasks"
+          component={TaskList}
+          options={{headerShown: false}}
         />
-        {/* {handleScreens()} */}
-        <TaskList />
-      </SafeAreaView>
-    </GlobalProvider>
+        <Stack.Screen
+          name="Details"
+          component={TaskDetails}
+          options={{headerShown: false}}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
 

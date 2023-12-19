@@ -9,7 +9,6 @@ import {
 } from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import styles from './styles';
-// import TaskNotes from '../TaskNotes';
 import {TaskProps} from '../../context/AppReducer';
 
 export default function Task({
@@ -17,7 +16,6 @@ export default function Task({
   id,
   title,
   status,
-  notes,
   onSelection,
   onEdit,
   onRemove,
@@ -25,48 +23,16 @@ export default function Task({
   const isDarkMode = useColorScheme() === 'dark';
   const [selectedStyle, setSelectedStyle] = useState({borderColor: 'white'});
   const [updatedTitle, setUpdatedTitle] = useState(title);
-  // const [updatedNotes, setUpdatedNotes] = useState(notes);
+  const [updatedDescription, setUpdatedDescription] = useState(title);
+  const [updatedDeadline, setUpdatedDeadline] = useState(title);
 
-  const handleSelection = () => {
-    if (onSelection && id !== selected) {
+  const handleDetails = () => {
+    if (`${id}` && onSelection) {
       onSelection(id);
     }
   };
 
-  const handleTitle = (text: string) => {
-    handleSelection();
-    if (text) {
-      setUpdatedTitle(text);
-    }
-  };
-
-  const handleTitleBlur = () => {
-    console.log('TODO: store title changes globally.', title, updatedTitle);
-    const updatedTask: TaskProps = {
-      id,
-      title,
-      status,
-      notes,
-    };
-    if (onEdit) {
-      if (title !== updatedTitle) {
-        updatedTask.title = updatedTitle;
-        onEdit(updatedTask);
-      }
-    }
-  };
-
-  // const handleNotes = (text: string) => {
-  //   handleSelection();
-  //   console.log('TODO: toggle the multiline input for the notes:', text);
-  // };
-
-  // const handleNotesBlur = () => {
-  //   console.log('TODO: store notes changes globally.');
-  // };
-
   const handleRemove = () => {
-    handleSelection();
     Alert.alert(
       'Are you sure?',
       'This will delete the selected task. There is no undoing this.',
@@ -89,13 +55,11 @@ export default function Task({
     );
   };
 
-  const toggleCompletion = () => {
-    handleSelection();
+  const handleCompletion = () => {
     const updatedTask: TaskProps = {
       id,
       title,
       status,
-      notes,
     };
     if (onEdit) {
       if (status === 'notStarted') {
@@ -113,10 +77,10 @@ export default function Task({
   }, [id, selected]);
 
   return (
-    <TouchableOpacity onPress={handleSelection}>
-      <View style={[styles.sectionContainer, selectedStyle]}>
+    <View style={[styles.sectionContainer, selectedStyle]}>
+      <View style={styles.row}>
         <View style={styles.row}>
-          <TouchableOpacity onPress={toggleCompletion}>
+          <TouchableOpacity onPress={handleCompletion}>
             <View
               style={[
                 styles.checkbox,
@@ -124,50 +88,24 @@ export default function Task({
               ]}
             />
           </TouchableOpacity>
-          {selected === id ? (
-            <TouchableOpacity onPress={handleRemove}>
-              <View>
-                <Text>X</Text>
-              </View>
-            </TouchableOpacity>
-          ) : null}
         </View>
-        {selected === id ? (
-          <TextInput
-            style={{
-              ...styles.sectionDescription,
-              borderWidth: 1,
-              borderColor: 'gray',
-            }}
-            onChangeText={handleTitle}
-            value={updatedTitle}
-            onBlur={handleTitleBlur}
-          />
-        ) : (
-          <TouchableOpacity onPress={handleSelection}>
-            <Text
-              style={[
-                styles.sectionDescription,
-                {
-                  color: isDarkMode ? Colors.white : Colors.black,
-                },
-              ]}>
-              {title}
-            </Text>
-          </TouchableOpacity>
-        )}
-        {/* {notes ? (
-          <TouchableOpacity onPress={handleNotes}>
-            <TaskNotes taskId={id} notes={notes} />
-          </TouchableOpacity>
-        ) : (
-          <TouchableOpacity onPress={handleNotes}>
-            <View>
-              <Text>Add Notes</Text>
-            </View>
-          </TouchableOpacity>
-        )} */}
+        <TouchableOpacity onPress={handleRemove}>
+          <View>
+            <Text>X</Text>
+          </View>
+        </TouchableOpacity>
       </View>
-    </TouchableOpacity>
+      <TouchableOpacity onPress={handleDetails}>
+        <Text
+          style={[
+            styles.sectionDescription,
+            {
+              color: isDarkMode ? Colors.white : Colors.black,
+            },
+          ]}>
+          {title}
+        </Text>
+      </TouchableOpacity>
+    </View>
   );
 }

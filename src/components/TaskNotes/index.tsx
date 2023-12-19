@@ -5,15 +5,15 @@ import styles from './styles';
 
 type TaskNotesProps = {
   taskId: number;
-  notes: string;
+  description: string;
 };
 
 export default function TaskNotes({
   taskId,
-  notes,
+  description,
 }: Readonly<TaskNotesProps>): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
-  return notes ? (
+  return description ? (
     <View key={taskId} style={styles.sectionContainer}>
       <Text
         style={[
@@ -31,7 +31,7 @@ export default function TaskNotes({
             color: isDarkMode ? Colors.light : Colors.dark,
           },
         ]}>
-        {notes}
+        {description}
       </Text>
     </View>
   ) : (

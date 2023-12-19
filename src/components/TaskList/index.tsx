@@ -1,6 +1,7 @@
-import React, {useContext, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {
   FlatList,
+  SafeAreaView,
   Text,
   TouchableOpacity,
   View,
@@ -8,29 +9,64 @@ import {
 } from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import styles from './styles';
-import {TaskProps /*, TaskListProps */} from '../../context/AppReducer';
-import {GlobalContext} from '../../context/GlobalState';
+import {TaskProps, TaskListProps} from '../../context/AppReducer';
+import useTasks from '../../hooks/useTasks';
 import Task from '../Task';
 
-export default function TaskList(/*{
-  title,
+export default function TaskList({
   navigation,
-}: Readonly<TaskListProps>*/): React.JSX.Element {
-  const {tasks, addTask, editTask, removeTask} = useContext(GlobalContext);
-  const [selectedTask, setSelectedTask] = useState<TaskProps>();
+}: Readonly<TaskListProps>): React.JSX.Element {
+  const {
+    activityState,
+    tasks,
+    selectedTask,
+    addTask,
+    fetchTasks,
+    fetchTask,
+    editTask,
+    removeTask,
+  } = useTasks();
 
   const isDarkMode = useColorScheme() === 'dark';
 
-  const handleAddTask = () => {
-    const newTask: TaskProps = {
-      id: tasks.length + 1,
-      title: 'New Task',
-      status: 'notStarted',
-    };
-    addTask(newTask);
+  useEffect(() => {
+    fetchTasks();
+  }, [fetchTasks]);
+
+  useEffect(() => {
+    console.log('SELECTED:', selectedTask);
+    if (selectedTask) {
+      navigation.navigate('Details', {
+        selectedTask,
+      });
+    }
+  }, [selectedTask, navigation]);
+
+  const handleRefresh = () => {
+    fetchTasks();
   };
 
-  const handleRemoveTask = (id: number) => {
+  const handleAdd = () => {
+    try {
+      const newTask: TaskProps = {
+        id: tasks.length + 1,
+        title: 'New Task',
+        status: 'notStarted',
+        description: 'Add a description',
+        deadline: 'tomorrow',
+      };
+      addTask();
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  // handle saving the edited task
+  const handleUpdate = (updatedTask: TaskProps) => {
+    editTask(updatedTask);
+  };
+
+  const handleRemove = (id: number) => {
     removeTask(id);
   };
 
@@ -47,7 +83,7 @@ export default function TaskList(/*{
   //     status,
   //   };
   //   console.log(updatedTask);
-  //   editTask(updatedTask as TaskProps);
+  //   edit(updatedTask as TaskProps);
   // };
 
   // // handle editing the title of the task
@@ -59,24 +95,23 @@ export default function TaskList(/*{
   //     ...currentTask,
   //     title,
   //   };
-  //   editTask(updatedTask as TaskProps);
+  //   edit(updatedTask as TaskProps);
   // };
 
-  const handleSelectionChange = (id: number) => {
-    const selection = tasks.find(t => {
-      return t.id === id;
-    });
-    // console.log('SELECTION:', selection);
-    setSelectedTask(selection);
+  const handleSelect = (id: number) => {
+    fetchTask(id);
   };
 
-  // handle saving the edited task
-  const handleEditTask = (updatedTask: TaskProps) => {
-    editTask(updatedTask);
-  };
+  if (activityState === 'loading') {
+    return (
+      <View style={styles.sectionContainer}>
+        <Text>Loading</Text>
+      </View>
+    );
+  }
 
   return (
-    <View style={styles.sectionContainer}>
+    <SafeAreaView style={styles.sectionContainer}>
       {tasks.length > 0 ? (
         <FlatList
           ListHeaderComponent={
@@ -90,30 +125,30 @@ export default function TaskList(/*{
                 ]}>
                 Tasks
               </Text>
-              <TouchableOpacity onPress={handleAddTask}>
-                <View style={styles.addTaskButton} />
+              <TouchableOpacity onPress={handleAdd}>
+                <View style={styles.addButton}>
+                  <Text style={styles.addButtonText}>Add Task</Text>
+                </View>
               </TouchableOpacity>
             </View>
           }
           data={tasks}
           renderItem={({item}: {item: TaskProps}) => (
             <Task
-              selected={selectedTask?.id}
               id={item.id}
               title={item.title}
               status={item.status}
-              notes={item.notes}
-              onSelection={handleSelectionChange}
-              onEdit={handleEditTask}
-              onRemove={handleRemoveTask}
+              description={item.description}
+              onSelection={handleSelect}
+              onEdit={handleUpdate}
+              onRemove={handleRemove}
             />
           )}
-          extraData={selectedTask}
           keyExtractor={item => `${item.id}`}
         />
       ) : (
         <Text>NO TASKS</Text>
       )}
-    </View>
+    </SafeAreaView>
   );
 }

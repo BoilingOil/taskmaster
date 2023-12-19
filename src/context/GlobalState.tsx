@@ -3,20 +3,31 @@ import React, {createContext, useReducer} from 'react';
 import appReducer, {TaskProps} from './AppReducer';
 
 type InitialState = {
+  selectedTask: TaskProps;
   tasks: TaskProps[];
-  addTask: (task: TaskProps) => void;
-  editTask: (task: TaskProps) => void;
-  removeTask: (id: number) => void;
+  select: (task: TaskProps) => void;
+  add: (task: TaskProps) => void;
+  edit: (task: TaskProps) => void;
+  remove: (id: number) => void;
 };
 
 const initialState: InitialState = {
+  selectedTask: {
+    id: 0,
+    title: 'Welcome To Taskmaster!',
+    status: 'notStarted',
+    description:
+      'WELCOME! The controls are very simple. You can start a task and complete a task. Completed tasks can be deleted. Try it with this one. Have a great day!',
+    deadline: 'today',
+  },
   tasks: [
     {
       id: 0,
       title: 'Welcome To Taskmaster!',
       status: 'notStarted',
-      notes:
+      description:
         'WELCOME! The controls are very simple. You can start a task and complete a task. Completed tasks can be deleted. Try it with this one. Have a great day!',
+      deadline: 'today',
     },
     {
       id: 1,
@@ -31,12 +42,12 @@ const initialState: InitialState = {
     {
       id: 3,
       title: 'Build Taskmaster UI',
-      status: 'inProgress',
+      status: 'notStarted',
     },
     {
       id: 4,
       title: 'Build Taskmaster UI',
-      status: 'inProgress',
+      status: 'notStarted',
     },
     {
       id: 5,
@@ -51,7 +62,7 @@ const initialState: InitialState = {
     {
       id: 7,
       title: 'Build TaskmasterAPI',
-      status: 'inProgress',
+      status: 'notStarted',
     },
     {
       id: 8,
@@ -69,15 +80,23 @@ const initialState: InitialState = {
       status: 'notStarted',
     },
   ],
-  addTask: () => {},
-  editTask: () => {},
-  removeTask: () => {},
+  select: () => {},
+  add: () => {},
+  edit: () => {},
+  remove: () => {},
 };
 
 export const GlobalContext = createContext(initialState);
 
 export const GlobalProvider = ({children}: {children: any}) => {
   const [state, dispatch] = useReducer(appReducer, initialState);
+
+  function selectTask(task: TaskProps) {
+    dispatch({
+      type: 'SELECT_TASK',
+      payload: task,
+    });
+  }
 
   function addTask(task: TaskProps) {
     dispatch({
@@ -103,10 +122,12 @@ export const GlobalProvider = ({children}: {children: any}) => {
   return (
     <GlobalContext.Provider
       value={{
+        selectedTask: initialState.tasks[0],
         tasks: state.tasks,
-        addTask,
-        editTask,
-        removeTask,
+        select: selectTask,
+        add: addTask,
+        edit: editTask,
+        remove: removeTask,
       }}>
       {children}
     </GlobalContext.Provider>
